@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Todo app</title>
+  </head>
+  <style>
+    body {
+      background: #654ea3; /* fallback for old browsers */
+      background: -webkit-linear-gradient(
+        to right,
+        #eaafc8,
+        #654ea3
+      ); /* Chrome 10-25, Safari 5.1-6 */
+      background: linear-gradient(
+        to right,
+        #eaafc8,
+        #654ea3
+      ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+      color: white;
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+    }
+    h1 {
+      background: #4b6cb7; /* fallback for old browsers */
+      background: -webkit-linear-gradient(to right, #182848, #4b6cb7);
+      background: linear-gradient(to right, #182848, #4b6cb7);
+      -webkit-background-clip: text;
+      color: transparent;
+      font-size: 4rem;
+      text-align: center;
+      font-family: cursive;
+    }
+    .p {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: pink;
+    }
+    .container {
+      max-width: 60rem;
+      margin: auto;
+      padding: 4rem 3rem;
+      border: 3px solid #333;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      background-color: #182848;
+    }
+    #title {
+      font-size: 3rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 30px;
+      background: #ff0099; /* fallback for old browsers */
+      background: -webkit-linear-gradient(
+        to right,
+        #493240,
+        #ff0099
+      ); /* Chrome 10-25, Safari 5.1-6 */
+      background: linear-gradient(to right, #493240, #ff0099);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    #box {
+      padding: 2rem;
+      border: 2px solid pink;
+      margin: 30px 0;
+      border-radius: 5px;
+      color: #333;
+      font-size: 20px;
+    }
+    input[type="text"] {
+      padding: 2rem;
+      border-radius: 5px;
+      background: none;
+      border: 2px solid pink;
+      color: white;
+      font-size: 15px;
+      width: max-content;
+    }
+
+    input[type="date"] {
+      padding: 1.8rem 0.5rem;
+      margin-left: 10px;
+      background: none;
+      color: #fff;
+      border: 2px solid pink;
+    }
+
+    button {
+      margin-top: 10px;
+      width: 120px;
+      height: 50px;
+      border: 2px solid pink;
+      background: none;
+      border-radius: 5px;
+      text-align: center;
+      color: #fff;
+    }
+    .btn {
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      margin-left: 10px;
+      font-size: 15px;
+    }
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+      .container {
+        max-width: 30rem;
+        padding: 0.5rem;
+      }
+    }
+  </style>
+  <body>
+    <h1>My Very Fast Todo App</h1>
+    <div class="container">
+      <div id="title">Add Todos</div>
+
+      <div>
+        <div class="div">
+          <p class="p">Add Your List</p>
+          <input type="text" />
+
+          <input type="date" id="date-picker" />
+        </div>
+      </div>
+      <button onclick="addTodo()">Add Todo</button>
+      <div id="box"></div>
+    </div>
+  </body>
+  <script>
+    let todos;
+    const seeLocal = JSON.parse(localStorage.getItem("datas"));
+    if (Array.isArray(seeLocal)) {
+      todos = seeLocal;
+    } else {
+      todos = [
+        {
+          title: "Ice Cream",
+          date: "01-03-2020",
+          id: "id1",
+        },
+        {
+          title: "Ice Cream",
+          date: "01-03-2020",
+          id: "id2",
+        },
+        {
+          title: "Ice Cream",
+          date: "01-03-2020",
+          id: "id3",
+        },
+      ];
+    }
+    function pushingData(title, data) {
+      var id = "" + new Date().getTime();
+      todos.push({
+        title: title,
+        date: data,
+        id: id,
+      });
+      displaying();
+      savingData();
+    }
+
+    function removeTodo(data) {
+      todos = todos.filter((app) => {
+        if (app.id === data) {
+          return false;
+        } else {
+          return true;
+        }
+      });
+      savingData();
+    }
+    function addTodo() {
+      var input = document.querySelector("input");
+
+      var inputValue = input.value;
+
+      var date = document.querySelector("#date-picker");
+
+      var datePicker = date.value;
+      pushingData(inputValue, datePicker);
+    }
+    function wipesOut(event) {
+      const targetingEvent = event.target;
+      const idGetting = targetingEvent.id;
+      removeTodo(idGetting);
+
+      displaying();
+    }
+    function savingData() {
+      localStorage.setItem("datas", JSON.stringify(todos));
+    }
+    displaying();
+    function displaying() {
+      var box = document.querySelector("#box");
+      box.innerHTML = "";
+
+      todos.forEach((app) => {
+        var wrapper = document.createElement("div");
+        wrapper.innerText = `${app.title} ${app.date}`;
+        wrapper.style.border = " 1px solid pink";
+        wrapper.style.marginBottom = "10px";
+        wrapper.style.color = "white";
+        wrapper.style.padding = "7px";
+        wrapper.style.borderRadius = "7px";
+
+        var box = document.querySelector("#box");
+        box.appendChild(wrapper);
+        var deleteButton = document.createElement("button");
+        deleteButton.innerText = "X";
+        deleteButton.className = "btn";
+        deleteButton.onclick = wipesOut;
+        deleteButton.id = app.id;
+        wrapper.appendChild(deleteButton);
+
+        console.log(deleteButton);
+      });
+    }
+    displaying();
+  </script>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Javascript Todo App</title>
+  </head>
+  <style>
+    .container {
+      max-width: 60rem;
+      margin: 100px auto;
+      padding: 3rem 2rem;
+      border: 1px solid pink;
+      border-radius: 5px;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    .h1 {
+      text-align: center;
+    }
+  </style>
+  <body>
+    <h1 class="h1">Todo App</h1>
+    <div class="container">
+      <input type="text" />
+      <input type="date" id="date-picker" />
+      <button onclick="addTodo()">Add Button</button>
+      <div id="lists"></div>
+    </div>
+    <script>
+      let todos;
+      const retriving = JSON.parse(localStorage.getItem("Keys"));
+      if (Array.isArray(retriving)) {
+        todos = retriving;
+      } else {
+        todos = [
+          {
+            title: "Burger",
+            date: "01-03-2021",
+            id: "id1",
+          },
+          {
+            title: "Lasagnae",
+            date: "01-03-2021",
+            id: "id2",
+          },
+          {
+            title: "Strawberry",
+            date: "01-03-2021",
+            id: "id3",
+          },
+        ];
+      }
+      function createTodo(title, date) {
+        var id = "" + new Date().getTime();
+        todos.push({
+          title: title,
+          date: date,
+          id: id,
+        });
+        savingTodos();
+      }
+      function addingTodo(fun) {
+        todos = todos.filter((todo) => {
+          if (todo.id === fun) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+        savingTodos();
+      }
+      displayTodos();
+      function addTodo() {
+        var input = document.querySelector("input");
+        var inputValue = input.value;
+
+        var date = document.querySelector("#date-picker");
+        var dateValue = date.value;
+
+        displayTodos();
+        createTodo(inputValue, dateValue);
+      }
+
+      function deleteMe(event) {
+        const deleting = event.target;
+        const idDeleting = deleting.id;
+        addingTodo(idDeleting);
+        displayTodos();
+      }
+      function savingTodos() {
+        localStorage.setItem("Keys", JSON.stringify(todos));
+      }
+      function displayTodos() {
+        var list = document.querySelector("#lists");
+        list.innerHTML = "";
+        todos.forEach((todo) => {
+          var div = document.createElement("div");
+          div.innerHTML = todo.title + "" + todo.date;
+
+          var list = document.querySelector("#lists");
+          list.appendChild(div);
+
+          var button = document.createElement("button");
+          button.innerText = "Delete Me";
+          button.style.marginLeft = "10px";
+
+          button.onclick = deleteMe;
+          button.id = todo.id;
+          div.appendChild(button);
+        });
+      }
+      displayTodos();
+    </script>
+  </body>
+</html>

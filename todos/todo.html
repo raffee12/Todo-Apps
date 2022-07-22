@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    .container {
+      width: 70%;
+      max-width: 768px;
+      margin: 100px auto;
+      padding: 3rem 2rem;
+
+      background-color: hsl(263, 55%, 52%);
+      color: #fff;
+    }
+  </style>
+  <body>
+    <div class="container">
+      <input type="text" />
+      <input type="date" id="date-picker" />
+      <button onclick="addTodo()">Add Button</button>
+      <div id="lists"></div>
+    </div>
+
+    <script>
+      let todos;
+
+      const lookAt = JSON.parse(localStorage.getItem("songs"));
+
+      if (Array.isArray(lookAt)) {
+        todos = lookAt;
+      } else {
+        todos = [
+          {
+            title: "Burger",
+            date: "01-03-2021",
+            id: "id1",
+          },
+          {
+            title: "Lasagnae",
+            date: "01-03-2021",
+            id: "id2",
+          },
+          {
+            title: "Cake",
+            date: "01-03-2021",
+            id: "id3",
+          },
+        ];
+      }
+      function pushingValue(title, date) {
+        var id = "" + new Date().getTime();
+        todos.push({
+          title: title,
+          date: date,
+          id: id,
+        });
+        saveData();
+      }
+      function wippingOut(deleting) {
+        todos = todos.filter((app) => {
+          if (app.id === deleting) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+        saveData();
+      }
+      function addTodo() {
+        var input = document.querySelector("input");
+        var inputValue = input.value;
+
+        var date = document.querySelector("#date-picker");
+        var dateValue = date.value;
+        pushingValue(inputValue, dateValue);
+        render();
+      }
+
+      function removeMe(event) {
+        const eventTarget = event.target;
+        const gettingId = eventTarget.id;
+        wippingOut(gettingId);
+        render();
+      }
+      function saveData() {
+        localStorage.setItem("songs", JSON.stringify(todos));
+      }
+      //view
+      function render() {
+        var list = document.querySelector("#lists");
+        list.innerHTML = "";
+        todos.forEach((app) => {
+          var div = document.createElement("div");
+          div.innerText = app.title + "" + app.date;
+
+          var list = document.querySelector("#lists");
+          list.appendChild(div);
+          var buttonDelete = document.createElement("button");
+          buttonDelete.innerText = "X";
+          buttonDelete.id = app.id;
+          buttonDelete.onclick = removeMe;
+          buttonDelete.style.marginLeft = "20px";
+          div.appendChild(buttonDelete);
+        });
+      }
+      render();
+    </script>
+  </body>
+</html>
